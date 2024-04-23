@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        function findClosesth() {
+            if (arguments.length === 0) {
+                return null;
+            }
+            let closest = arguments[0];
+            let minDiff = Math.abs(arguments[0] - Math.round(arguments[0]));
+            for (let i = 1; i < arguments.length; i++) {
+                let diff = Math.abs(arguments[i] - Math.round(arguments[i]));
+                if (diff < minDiff ) {
+                    minDiff = diff;
+                    closest = arguments[i];
+                }
+            }
+            return closest;
+        }
+    </script>
+    <script>
+        function findClosest() {
+            if (arguments.length === 0) {
+                return null;
+            }
+            arg = [...arguments]
+            let closest = arg[0];
+            let minDiffStart = Math.abs(arg[0] - Math.round(arg[0]));
+            const result = arg.reduce((temp, value) => {
+                let diff = Math.abs(value - Math.round(value));
+                return diff < temp.minDiff ? { value, minDiff: diff } : temp; }, { value: closest, minDiff: minDiffStart });
+            return result.value;
+        }
+    </script>
+</head>
+<body>
+    <script>
+        let userInput = prompt("Введите числа");
+        let numbers = userInput.split(",");
+        let result = findClosest.apply(null, numbers);
+        alert("Результат: " + result);
+    </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+.task {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.input input[type="number"] {
+    width: 100px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.input p {
+    margin: 10px 0;
+}
+
+.input button:hover {
+    background-color: #45a049;
+}
+
+.error {
+    border: solid thin red;
+}

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="task">
+        <div id="inputImage">
+            <img src="trapezoid_image.png" alt="Trapezoid" id="trapezoidImage">
+        </div>
+        <div class="input">
+            <label for="inputType">Выберите тип входных данных:</label>
+            <select id="inputType">
+                <option value="sideHeight">Основание, боковые стороны и высота к основанию</option>
+                <option value="baseAngle">Основание, высоту к основанию и прилежащие к основанию углы</option>
+            </select>
+            <input type="button" value="Показать" onClick="showInputs()">
+        
+        <div id="inputFields" style="display:none;">
+            <form id="inputForm">
+            </form>
+        </div>
+        <p>
+            <label>Найти:</label><br>
+            <label><input type="checkbox" id="chkUnknownSides">Неизвестные стороны</label><br>
+            <label><input type="checkbox" id="chkDiagonalAngle">Угол между диагоналями</label><br>
+            <label><input type="checkbox" id="chkDiagonals">Диагонали</label><br>
+            <label><input type="checkbox" id="chkArea">Площадь</label>
+        </p>
+        <p>
+            <input type="button" value="Вычислить" onClick="calculate()">
+            <input type="button" value="Очистить" onClick="clearInputs()">
+        </p>
+        </div>
+        <div id="output"></div>
+    </div>
+    <script>
+        function showInputs() {
+            let inputType = document.getElementById("inputType").value;
+            let inputFieldsDiv = document.getElementById("inputFields");
+            if (inputType === "sideHeight") {
+                inputFieldsDiv.innerHTML = `   
+                    <p><label>a = 
+                        <input type="number" id="base" min=0 max=200>
+                    </label></p>
+                    <p><label>b = 
+                        <input type="number" id="side" min=0 max=200>
+                    </label></p>
+                    <p><label>c = 
+                        <input type="number" id="side2" min=0 max=200>
+                    </label></p>
+                    <p><label>h = 
+                        <input type="number" id="height" min=0 max=200>
+                    </label></p>
+                `;
+                document.getElementById("trapezoidImage").src = "trapezoid_image.png";
+            } else if (inputType === "baseAngle") {
+                inputFieldsDiv.innerHTML = `
+                    <p><label>a = 
+                        <input type="number" id="base" min=0 max=200>
+                    </label></p>
+                    <p><label>alpha = 
+                        <input type="number" id="angle1" min=0 max=180>
+                    </label></p>
+                    <p><label>beta = 
+                        <input type="number" id="angle2" min=0 max=180>
+                    </label></p>
+                    <p><label>h = 
+                        <input type="number" id="height" min=0 max=200>
+                    </label></p>
+                `;
+                document.getElementById("trapezoidImage").src = "trapezoid_image2.png";
+            }
+            inputFieldsDiv.style.display = "block";
+        }
+        showInputs()
+
+        function calculate(data) {
+            let base = data.base.value;
+            let height = data.height.value;
+            let side = data.side.value;
+            let side2 = data.side2.value;
+            let angle1 = data.angle1.value;
+            let angle2 = data.angle2.value;
+            let outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = "<p>Результат:</p>" + base;
+
+            if (isNaN(base) || isNaN(height)) {
+                outputDiv.innerHTML = "Введите основание и высоту трапеции";
+                data.height.classList.add("error");
+                return false;
+            }
+
+            if (data.chkUnknownSides.checked) {
+                if (isNaN(side) || isNaN(side2)) {
+                    outputDiv.innerHTML += "Введите длины боковых сторон трапеции";
+                } else {
+                    let a = base;
+                    let b = side;
+                    let c = side2;
+                    let h = height;
+                    let unknownSide = Math.sqrt(Math.pow(b, 2) - 2 * b * c * Math.cos((angle1 * Math.PI) / 180) + Math.pow(c, 2));
+                    let newElement1 = document.createElement('p');
+                    newElement1.innerHTML = "Длина неизвестной стороны: " + unknownSide.toFixed(2) + "<br>";
+                    output.appendChild(newElement1);
+                    outputDiv.innerHTML += "Длина неизвестной стороны: " + unknownSide.toFixed(2) + "<br>";
+                }
+            }
+            if (data.chkDiagonalAngle.checked) {
+                if (isNaN(angle1) || isNaN(angle2)) {
+                    outputDiv.innerHTML += "Введите углы трапеции";
+                } else {
+                    let diagonalAngle = Math.abs(angle1 - angle2);
+                    let newElement1 = document.createElement('p');
+                    newElement1.innerHTML = "S = " + s;
+                    output.appendChild(newElement1);
+
+                    outputDiv.innerHTML += "Угол между диагоналями: " + diagonalAngle.toFixed(2) + " градусов<br>";
+                }
+            }
+            if (data.chkDiagonals.checked) {
+                if (isNaN(side) || isNaN(side2) || isNaN(angle1) || isNaN(angle2)) {
+                    outputDiv.innerHTML += "Введите длины боковых сторон и углы трапеции";
+                } else {
+                    let diagonal1 = Math.sqrt(Math.pow(base, 2) + Math.pow(side, 2) - 2 * base * side * Math.cos((angle1 * Math.PI) / 180));
+                    let diagonal2 = Math.sqrt(Math.pow(base, 2) + Math.pow(side2, 2) - 2 * base * side2 * Math.cos((angle2 * Math.PI) / 180));
+                    outputDiv.innerHTML += "Длина первой диагонали: " + diagonal1.toFixed(2) + "<br>";
+                    outputDiv.innerHTML += "Длина второй диагонали: " + diagonal2.toFixed(2) + "<br>";
+                }
+            }
+            if (data.chkArea.checked) {
+                let area = 0.5 * (base + base) * height;
+                outputDiv.innerHTML += "Площадь трапеции: " + area.toFixed(2) + "<br>";
+            }
+        }
+
+
+        function clearInputs() {
+            let inputs = document.querySelectorAll("input[type='number']");
+            inputs.forEach(input => {
+                input.value = "";
+                input.classList.remove("error");
+            });
+            let outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = "";
+        }
+    </script>
+</body>
+</html>

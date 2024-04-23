@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор трапеции</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="task">
+        <div id="inputImage">
+            <img src="trapezoid_image.png" alt="Trapezoid" id="trapezoidImage">
+        </div>
+        <div class="input">
+            <label for="inputType">Выберите тип входных данных:</label>
+            <select id="inputType">
+                <option value="sideHeight">Основание, боковые стороны и высота к основанию</option>
+                <option value="baseAngle">Основание, высоту к основанию и прилежащие к основанию углы</option>
+            </select>
+            <input type="button" value="Показать" onClick="showInputs()">
+        
+        <div id="inputFields" style="display:none;">
+            <form id="inputForm">
+            </form>
+        </div>
+        <p>
+            <label>Найти:</label><br>
+            <label><input type="checkbox" id="chkUnknownSides">Неизвестные стороны</label><br>
+            <label><input type="checkbox" id="chkDiagonalAngle">Угол между диагоналями</label><br>
+            <label><input type="checkbox" id="chkDiagonals">Диагонали</label><br>
+            <label><input type="checkbox" id="chkArea">Площадь</label>
+        </p>
+        <p>
+            <input type="button" value="Вычислить" onClick="calculate()">
+            <input type="button" value="Очистить" onClick="clearInputs()">
+        </p>
+        </div>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        function showInputs() {
+            let inputType = document.getElementById("inputType").value;
+            let inputFieldsDiv = document.getElementById("inputFields");
+            if (inputType === "sideHeight") {
+                inputFieldsDiv.innerHTML = `   
+                    <p><label>a = 
+                        <input type="number" id="base" min=0 max=200>
+                    </label></p>
+                    <p><label>b = 
+                        <input type="number" id="side" min=0 max=200>
+                    </label></p>
+                    <p><label>c = 
+                        <input type="number" id="side2" min=0 max=200>
+                    </label></p>
+                    <p><label>h = 
+                        <input type="number" id="height" min=0 max=200>
+                    </label></p>
+                `;
+                document.getElementById("trapezoidImage").src = "trapezoid_image.png";
+            } else if (inputType === "baseAngle") {
+                inputFieldsDiv.innerHTML = `
+                    <p><label>a = 
+                        <input type="number" id="base" min=0 max=200>
+                    </label></p>
+                    <p><label>alpha = 
+                        <input type="number" id="angle1" min=0 max=180>
+                    </label></p>
+                    <p><label>beta = 
+                        <input type="number" id="angle2" min=0 max=180>
+                    </label></p>
+                    <p><label>h = 
+                        <input type="number" id="height" min=0 max=200>
+                    </label></p>
+                `;
+                document.getElementById("trapezoidImage").src = "trapezoid_image2.png";
+            }
+            inputFieldsDiv.style.display = "block";
+        }
+        showInputs()
+
+        function calculate() {
+            let inputType = document.getElementById("inputType").value;
+            let base = parseFloat(document.getElementById("base").value);
+            let height = parseFloat(document.getElementById("height").value);
+            let outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = "<p>Результат:</p>";
+
+            if (inputType === "sideHeight") {
+                let side = parseFloat(document.getElementById("side").value);
+                let side2 = parseFloat(document.getElementById("side2").value);
+                if (isNaN(base) || isNaN(height) || isNaN(side) || isNaN(side2)) {
+                    outputDiv.innerHTML += "Введите корректные данные для расчета.";
+                    return;
+                }
+
+                if (document.getElementById("chkUnknownSides").checked) {
+                    // Расчет неизвестных сторон
+                    let unknownSide = Math.sqrt(Math.pow(base, 2) + Math.pow(side - side2, 2) - 2 * base * (side - side2) * Math.cos(Math.atan2(height, (side - side2))));
+                    outputDiv.innerHTML += "Длина неизвестной стороны: " + unknownSide.toFixed(2) + "<br>";
+                }
+
+                if (document.getElementById("chkDiagonalAngle").checked) {
+                    // Расчет угла между диагоналями
+                    let diagonalAngle = Math.atan2(side2, height) - Math.atan2(side, height);
+                    outputDiv.innerHTML += "Угол между диагоналями: " + (diagonalAngle * (180 / Math.PI)).toFixed(2) + " градусов<br>";
+                }
+
+                if (document.getElementById("chkDiagonals").checked) {
+                    // Расчет длин диагоналей
+                    let diagonal1 = Math.sqrt(Math.pow(base, 2) + Math.pow(side, 2) - 2 * base * side * Math.cos(Math.atan2(height, side)));
+                    let diagonal2 = Math.sqrt(Math.pow(base, 2) + Math.pow(side2, 2) - 2 * base * side2 * Math.cos(Math.atan2(height, side2)));
+                    outputDiv.innerHTML += "Длина первой диагонали: " + diagonal1.toFixed(2) + "<br>";
+                    outputDiv.innerHTML += "Длина второй диагонали: " + diagonal2.toFixed(2) + "<br>";
+                }
+
+                if (document.getElementById("chkArea").checked) {
+                    // Расчет площади
+                    let area = 0.5 * (base + base) * height;
+                    outputDiv.innerHTML += "Площадь трапеции: " + area.toFixed(2) + "<br>";
+                }
+            } else if (inputType === "baseAngle") {
+                let angle1 = parseFloat(document.getElementById("angle1").value);
+                let angle2 = parseFloat(document.getElementById("angle2").value);
+                if (isNaN(base) || isNaN(height) || isNaN(angle1) || isNaN(angle2)) {
+                    outputDiv.innerHTML += "Введите корректные данные для расчета.";
+                    return;
+                }
+
+                if (document.getElementById("chkUnknownSides").checked) {
+                    // Расчет неизвестных сторон
+                    let unknownSide = Math.sqrt(Math.pow(base, 2) - Math.pow(height / Math.tan(angle1 * (Math.PI / 180)), 2));
+                    outputDiv.innerHTML += "Длина неизвестной стороны: " + unknownSide.toFixed(2) + "<br>";
+                }
+
+                if (document.getElementById("chkDiagonalAngle").checked) {
+                    // Расчет угла между диагоналями
+                    let diagonalAngle = 180 - angle1 - angle2;
+                    outputDiv.innerHTML += "Угол между диагоналями: " + diagonalAngle.toFixed(2) + " градусов<br>";
+                }
+
+                if (document.getElementById("chkDiagonals").checked) {
+                    // Расчет длин диагоналей
+                    let diagonal1 = Math.sqrt(Math.pow(base, 2) + Math.pow(height / Math.sin(angle1 * (Math.PI / 180)), 2));
+                    let diagonal2 = Math.sqrt(Math.pow(base, 2) + Math.pow(height / Math.sin(angle2 * (Math.PI / 180)), 2));
+                    outputDiv.innerHTML += "Длина первой диагонали: " + diagonal1.toFixed(2) + "<br>";
+                    outputDiv.innerHTML += "Длина второй диагонали: " + diagonal2.toFixed(2) + "<br>";
+                }
+
+                if (document.getElementById("chkArea").checked) {
+                    // Расчет площади
+                    let area = 0.5 * (base + base) * height;
+                    outputDiv.innerHTML += "Площадь трапеции: " + area.toFixed(2) + "<br>";
+                }
+            }
+        }
+
+
+
+        function clearInputs() {
+            let inputs = document.querySelectorAll("input[type='number']");
+            inputs.forEach(input => {
+                input.value = "";
+                input.classList.remove("error");
+            });
+            let outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = "";
+        }
+    </script>
+</body>
+</html>

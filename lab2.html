@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        function changePage(id) {
+            let item = document.getElementById(id);
+            let itemTag = item.tagName;
+            let elems = Array.from(document.getElementsByTagName(itemTag));
+            
+            elems.reduce((acc,curr) => {
+                if (curr !== item && curr.children.length === 0 && curr.textContent !=="") {
+                    let prevS = curr.previousElementSibling;
+                    if (prevS) {
+                        curr.textContent += ' - ' +prevS.textContent;
+                    }
+                }
+            })
+            
+        }
+    </script>
+</head>
+<body>
+    <button onclick="changePage('test')">кнопка</button>
+    <h3>Языки программирования</h3>
+    <div>Python</div>
+    <div id="test">C</div>
+    <div>Java</div>
+    <h3>История создания</h3>
+    <div>
+        <div>Pgwwvwrbwrbwbwrbrbrb</div>
+        <div>Жokmwvomvvovmwvkmwvw</div>
+        <p>Mwovowvovwovwev</p>
+        <p>wwwowovwmveowvwev</p>
+        <div> wgwmomvovmvom</div>
+    </div>
+    <h3>Разработчики</h3>
+</body>
+</html>
